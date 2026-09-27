@@ -1,0 +1,22 @@
+{
+  "harnessName": "SKY IT Harness & Architecture",
+  "harnessVersion": "0.1.0",
+  "sourceRepository": "sky-it-harness-architecture",
+  "sourceCommit": "ebdd5f1b81278b980efb8245f320bf418dc7588b",
+  "architectureProfile": "nextjs-app-router-typescript",
+  "distributedAt": "2026-09-13T22:03:28.414Z",
+  "managedFiles": [
+    ".it-harness/references/dependency-guidance.md",
+    ".it-harness/references/integrations.md",
+    ".it-harness/references/pilot-test-plan.md",
+    ".it-harness/references/project-setup.md",
+    ".it-harness/standards/architecture-nextjs.md",
+    ".it-harness/standards/core.md",
+    ".it-harness/standards/escalation.md",
+    ".it-harness/standards/release-and-deployment.md",
+    ".it-harness/standards/security.md",
+    ".it-harness/standards/testing-and-quality.md",
+    ".it-harness/manifest.json"
+  ],
+  "note": "This manifest records the provenance of the distributed harness copy. It does not independently prove the integrity of the files; integrity relies on Git history, access controls, and IT review."
+}
