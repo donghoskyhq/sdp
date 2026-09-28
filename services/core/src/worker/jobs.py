@@ -42,6 +42,7 @@ def provision_project(project_id: str) -> dict[str, str]:
             if project.deployment_target == "vercel":
                 with VercelClient.from_settings(settings) as vercel:
                     deployment = vercel.deploy_github_repository(
+                        repository_id=repository.id,
                         repository_full_name=repository.full_name,
                         repository_name=project.repository_name,
                         branch=repository.default_branch,

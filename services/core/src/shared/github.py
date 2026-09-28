@@ -12,6 +12,7 @@ class GitHubError(RuntimeError):
 
 @dataclass(frozen=True)
 class GitHubRepository:
+    id: int
     full_name: str
     html_url: str
     default_branch: str
@@ -86,6 +87,7 @@ class GitHubClient:
                 "auto_init": True,
             },
         )
+        repository_id = self._required_int(repository, "id")
         full_name = self._required_string(repository, "full_name")
         html_url = self._required_string(repository, "html_url")
         default_branch = repository.get("default_branch", "main")
@@ -98,6 +100,7 @@ class GitHubClient:
             files=load_nextjs_starter(project_name=project_name, repository_name=name),
         )
         return GitHubRepository(
+            id=repository_id,
             full_name=full_name,
             html_url=html_url,
             default_branch=default_branch,
@@ -189,6 +192,13 @@ class GitHubClient:
     def _required_string(data: dict[str, Any], key: str) -> str:
         value = data.get(key)
         if not isinstance(value, str) or not value:
+            raise GitHubError(f"GitHub response is missing {key}")
+        return value
+
+    @staticmethod
+    def _required_int(data: dict[str, Any], key: str) -> int:
+        value = data.get(key)
+        if not isinstance(value, int) or isinstance(value, bool):
             raise GitHubError(f"GitHub response is missing {key}")
         return value
 

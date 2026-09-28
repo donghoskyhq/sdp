@@ -57,7 +57,12 @@ class VercelClient:
         self.close()
 
     def deploy_github_repository(
-        self, *, repository_full_name: str, repository_name: str, branch: str
+        self,
+        *,
+        repository_id: int,
+        repository_full_name: str,
+        repository_name: str,
+        branch: str,
     ) -> DeploymentResult:
         project_name = self._project_name(repository_name)
         project = self._request(
@@ -82,7 +87,7 @@ class VercelClient:
                 "target": "production",
                 "gitSource": {
                     "type": "github",
-                    "repo": repository_full_name,
+                    "repoId": repository_id,
                     "ref": branch,
                 },
             },

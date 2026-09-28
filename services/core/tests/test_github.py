@@ -16,6 +16,7 @@ def test_create_nextjs_repository_commits_starter() -> None:
             return httpx.Response(
                 201,
                 json={
+                    "id": 123456,
                     "full_name": "sky/customer-portal",
                     "html_url": "https://github.com/sky/customer-portal",
                     "default_branch": "main",
@@ -45,6 +46,7 @@ def test_create_nextjs_repository_commits_starter() -> None:
             private=True,
         )
 
+    assert repository.id == 123456
     assert repository.full_name == "sky/customer-portal"
     assert repository.default_branch == "main"
     tree = captured_tree["tree"]

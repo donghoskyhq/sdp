@@ -22,6 +22,7 @@ class FakeGitHubClient(AbstractContextManager["FakeGitHubClient"]):
 
     def create_nextjs_repository(self, **_kwargs: object) -> GitHubRepository:
         return GitHubRepository(
+            id=123456,
             full_name="sky/example-project",
             html_url="https://github.com/sky/example-project",
             default_branch="main",

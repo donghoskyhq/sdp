@@ -42,6 +42,7 @@ def test_deploy_github_repository_creates_project_and_waits_until_ready() -> Non
             http_client=http_client,
         )
         result = client.deploy_github_repository(
+            repository_id=123456,
             repository_full_name="sky/example_project",
             repository_name="example_project",
             branch="main",
@@ -63,6 +64,6 @@ def test_deploy_github_repository_creates_project_and_waits_until_ready() -> Non
     assert deployment_body["target"] == "production"
     assert deployment_body["gitSource"] == {
         "type": "github",
-        "repo": "sky/example_project",
+        "repoId": 123456,
         "ref": "main",
     }
