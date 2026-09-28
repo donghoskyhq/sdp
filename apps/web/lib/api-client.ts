@@ -14,6 +14,7 @@ export interface ApiStatusResponse {
 }
 
 export type ProjectStatus = "pending" | "provisioning" | "ready" | "failed";
+export type DeploymentTarget = "vercel" | "railway";
 
 export interface Project {
   id: string;
@@ -23,6 +24,12 @@ export interface Project {
   status: ProjectStatus;
   github_url: string | null;
   github_full_name: string | null;
+  deployment_target: DeploymentTarget | null;
+  deployment_project_id: string | null;
+  deployment_service_id: string | null;
+  deployment_id: string | null;
+  deployment_url: string | null;
+  deployment_project_url: string | null;
   error_message: string | null;
   created_at: string;
   updated_at: string;
@@ -32,6 +39,7 @@ export interface ProjectCreateInput {
   name: string;
   repository_name: string;
   description?: string;
+  deployment_target: DeploymentTarget;
 }
 
 export class ApiClientError extends Error {

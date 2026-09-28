@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiClientError, apiClient } from "@/lib/api-client";
+import { ApiClientError, apiClient, type DeploymentTarget } from "@/lib/api-client";
 
 export interface CreateProjectState {
   status: "idle" | "success" | "error";
@@ -16,6 +16,7 @@ export async function createProjectAction(
   const name = String(formData.get("name") ?? "").trim();
   const repositoryName = String(formData.get("repositoryName") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const deploymentTarget = String(formData.get("deploymentTarget") ?? "");
 
   if (!name || !repositoryName) {
     return { status: "error", message: "Project name and repository name are required." };
@@ -28,10 +29,15 @@ export async function createProjectAction(
     };
   }
 
+  if (deploymentTarget !== "vercel" && deploymentTarget !== "railway") {
+    return { status: "error", message: "Choose Vercel or Railway as the deployment target." };
+  }
+
   try {
     await apiClient.createProject({
       name,
       repository_name: repositoryName,
+      deployment_target: deploymentTarget as DeploymentTarget,
       ...(description ? { description } : {}),
     });
     revalidatePath("/dashboard");

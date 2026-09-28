@@ -19,6 +19,12 @@ class Project(Base):
     status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
     github_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     github_full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    deployment_target: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    deployment_project_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    deployment_service_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    deployment_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    deployment_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    deployment_project_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)

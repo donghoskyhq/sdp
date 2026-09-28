@@ -62,6 +62,14 @@ services:
       GITHUB_OWNER_TYPE: ${GITHUB_OWNER_TYPE:-organization}
       GITHUB_API_URL: ${GITHUB_API_URL:-https://api.github.com}
       GITHUB_REPOSITORY_PRIVATE: ${GITHUB_REPOSITORY_PRIVATE:-true}
+      VERCEL_TOKEN: ${VERCEL_TOKEN:-}
+      VERCEL_TEAM_ID: ${VERCEL_TEAM_ID:-}
+      VERCEL_API_URL: ${VERCEL_API_URL:-https://api.vercel.com}
+      RAILWAY_TOKEN: ${RAILWAY_TOKEN:-}
+      RAILWAY_WORKSPACE_ID: ${RAILWAY_WORKSPACE_ID:-}
+      RAILWAY_API_URL: ${RAILWAY_API_URL:-https://backboard.railway.com/graphql/v2}
+      DEPLOYMENT_POLL_INTERVAL_SECONDS: ${DEPLOYMENT_POLL_INTERVAL_SECONDS:-5}
+      DEPLOYMENT_TIMEOUT_SECONDS: ${DEPLOYMENT_TIMEOUT_SECONDS:-900}
     depends_on:
       postgres:
         condition: service_healthy

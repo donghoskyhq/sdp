@@ -1,7 +1,9 @@
 # Railway deployment preparation
 
 This repository is prepared for four SDP application/data services. These instructions describe
-configuration only; they do not create Railway resources or supply production credentials.
+configuration only; they do not create those platform-hosting resources or supply production
+credentials. Separately, the running worker can create end-user Railway projects through the Public
+API.
 
 ## Services
 
@@ -64,6 +66,14 @@ the `postgresql+psycopg://` scheme expected by SQLAlchemy.
 | `GITHUB_OWNER_TYPE` | `organization` | Use `user` for a personal owner |
 | `GITHUB_API_URL` | `https://api.github.com` | Override only for GitHub Enterprise Server |
 | `GITHUB_REPOSITORY_PRIVATE` | `true` | Keep new repositories private by default |
+| `VERCEL_TOKEN` | secret | Vercel access token; worker only |
+| `VERCEL_TEAM_ID` | Vercel team ID | Optional; omit for personal scope |
+| `RAILWAY_TOKEN` | secret | Railway account/workspace token; worker only |
+| `RAILWAY_WORKSPACE_ID` | Railway workspace ID | Optional project destination workspace |
+| `DEPLOYMENT_TIMEOUT_SECONDS` | `900` | Maximum wait for the first deployment |
+
+Vercel and Railway must each have their GitHub integration installed with access to repositories
+created under `GITHUB_OWNER`.
 
 ## Internal connectivity
 

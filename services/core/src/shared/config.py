@@ -31,6 +31,17 @@ class Settings(BaseSettings):
     github_api_url: str = "https://api.github.com"
     github_repository_private: bool = True
 
+    vercel_token: str = ""
+    vercel_team_id: str = ""
+    vercel_api_url: str = "https://api.vercel.com"
+
+    railway_token: str = ""
+    railway_workspace_id: str = ""
+    railway_api_url: str = "https://backboard.railway.com/graphql/v2"
+
+    deployment_poll_interval_seconds: float = Field(default=5.0, ge=0)
+    deployment_timeout_seconds: int = Field(default=900, ge=1)
+
 
 @lru_cache
 def get_settings() -> Settings:

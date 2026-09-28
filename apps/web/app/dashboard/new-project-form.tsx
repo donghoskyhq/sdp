@@ -62,6 +62,40 @@ export function NewProjectForm() {
           placeholder="What will this project help the team deliver?"
         />
       </label>
+      <fieldset className="grid gap-3">
+        <legend className="text-sm font-medium">Deployment target</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="cursor-pointer rounded-xl border border-white/15 bg-slate-950/60 p-4 transition has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-300/5">
+            <span className="flex items-center gap-3">
+              <input
+                className="size-4 accent-emerald-300"
+                defaultChecked
+                name="deploymentTarget"
+                type="radio"
+                value="vercel"
+              />
+              <span className="font-semibold">Vercel</span>
+            </span>
+            <span className="mt-2 block pl-7 text-sm font-normal text-slate-400">
+              Deploy the Next.js application as a production deployment.
+            </span>
+          </label>
+          <label className="cursor-pointer rounded-xl border border-white/15 bg-slate-950/60 p-4 transition has-[:checked]:border-emerald-300 has-[:checked]:bg-emerald-300/5">
+            <span className="flex items-center gap-3">
+              <input
+                className="size-4 accent-emerald-300"
+                name="deploymentTarget"
+                type="radio"
+                value="railway"
+              />
+              <span className="font-semibold">Railway</span>
+            </span>
+            <span className="mt-2 block pl-7 text-sm font-normal text-slate-400">
+              Create a Railway project, service, public domain, and deployment.
+            </span>
+          </label>
+        </div>
+      </fieldset>
       <div className="flex flex-wrap items-center gap-4">
         <SubmitButton />
         {state.message ? (

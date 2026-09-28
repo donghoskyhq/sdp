@@ -46,6 +46,7 @@ def test_create_nextjs_repository_commits_starter() -> None:
         )
 
     assert repository.full_name == "sky/customer-portal"
+    assert repository.default_branch == "main"
     tree = captured_tree["tree"]
     assert isinstance(tree, list)
     paths = {entry["path"] for entry in tree}

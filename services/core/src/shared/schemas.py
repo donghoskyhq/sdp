@@ -17,6 +17,7 @@ class ServiceStatusResponse(HealthResponse):
 
 
 ProjectStatus = Literal["pending", "provisioning", "ready", "failed"]
+DeploymentTarget = Literal["vercel", "railway"]
 
 
 class ProjectCreate(BaseModel):
@@ -26,6 +27,7 @@ class ProjectCreate(BaseModel):
         Field(min_length=1, max_length=100, pattern=r"^[a-z0-9][a-z0-9._-]*$"),
     ]
     description: Annotated[str | None, Field(max_length=350)] = None
+    deployment_target: DeploymentTarget
 
     @field_validator("name", "repository_name")
     @classmethod
@@ -55,6 +57,12 @@ class ProjectResponse(BaseModel):
     status: ProjectStatus
     github_url: str | None
     github_full_name: str | None
+    deployment_target: DeploymentTarget | None
+    deployment_project_id: str | None
+    deployment_service_id: str | None
+    deployment_id: str | None
+    deployment_url: str | None
+    deployment_project_url: str | None
     error_message: str | None
     created_at: datetime
     updated_at: datetime

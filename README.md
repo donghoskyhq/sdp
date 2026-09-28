@@ -3,10 +3,8 @@
 SDP is an internal self-service platform for creating and running Sky software projects. This
 repository contains a Next.js Web application, a FastAPI core API, an RQ worker, PostgreSQL
 configuration, and a Redis-backed queue. Users can start projects from the dashboard; the worker
-creates a private GitHub repository and commits a minimal Next.js/TypeScript App Router starter.
-
-Harness management, controlled update pull requests, and deployment provisioning for Railway,
-Vercel, or AWS Amplify remain outside this workflow.
+creates a private GitHub repository, commits a minimal Next.js/TypeScript App Router starter, and
+deploys it to the selected Vercel or Railway account.
 
 ## Architecture
 
@@ -16,6 +14,8 @@ Next.js Web
         -> PostgreSQL
     -> Python Worker (through Redis Queue)
         -> PostgreSQL
+        -> GitHub
+        -> Vercel or Railway
 ```
 
 The Web status page calls FastAPI from the Next.js server through `API_BASE_URL`. In Railway this can
@@ -56,8 +56,16 @@ Project provisioning requires these worker environment variables:
 - `GITHUB_OWNER`: the organization or user account that will own new repositories.
 - `GITHUB_OWNER_TYPE`: `organization` (default) or `user`.
 - `GITHUB_REPOSITORY_PRIVATE`: whether newly created repositories are private (default: `true`).
+- `VERCEL_TOKEN`: Vercel access token used when Vercel is selected.
+- `VERCEL_TEAM_ID`: optional Vercel team ID. Leave empty for the token's personal scope.
+- `RAILWAY_TOKEN`: Railway account/workspace token used when Railway is selected.
+- `RAILWAY_WORKSPACE_ID`: optional workspace in which Railway projects are created.
+- `DEPLOYMENT_TIMEOUT_SECONDS`: maximum time the worker waits for the first deployment (default:
+  `900`).
 
-Do not expose `GITHUB_TOKEN` to the Web service or commit it to this repository.
+Do not expose provider tokens to the Web service or commit them to this repository. The Vercel and
+Railway accounts must have their GitHub integrations installed with access to the configured GitHub
+owner, including private repositories when `GITHUB_REPOSITORY_PRIVATE=true`.
 
 ## Run locally with native Web/API/Worker processes
 
@@ -112,10 +120,11 @@ local database and Redis volumes.
 
 ## Project provisioning
 
-Open the dashboard and submit a project name and repository name. The API records the project and
-enqueues `worker.jobs.provision_project`; the worker then creates the GitHub repository and replaces
-GitHub's initial commit with the bundled Next.js starter. Provisioning status and the repository link
-appear on the dashboard.
+Open the dashboard, submit a project name and repository name, and choose Vercel or Railway. The API
+records the project and enqueues `worker.jobs.provision_project`; the worker creates the GitHub
+repository, replaces GitHub's initial commit with the bundled Next.js starter, creates the provider
+project, and waits for its first deployment to succeed. The dashboard shows repository, deployment,
+and provider links.
 
 To enqueue an existing project manually while the worker is running:
 
@@ -147,6 +156,6 @@ pytest -c services/core/pyproject.toml services/core/tests
 
 ## Railway
 
-See [infra/railway/README.md](infra/railway/README.md) for the four service definitions, Dockerfile
-selection, internal service URLs, and required variables. This repository does not contain Railway
-credentials and does not create or deploy Railway resources.
+See [infra/railway/README.md](infra/railway/README.md) for hosting this platform's own Web, API,
+worker, PostgreSQL, and Redis services. End-user Next.js projects selected for Railway are provisioned
+through Railway's Public API by the worker.

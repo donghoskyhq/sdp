@@ -40,12 +40,14 @@ def test_create_and_list_project(client: TestClient) -> None:
             "name": "Customer Portal",
             "repository_name": "customer-portal",
             "description": "Customer self-service site",
+            "deployment_target": "vercel",
         },
     )
 
     assert response.status_code == 202
     assert response.json()["status"] == "pending"
     assert response.json()["repository_name"] == "customer-portal"
+    assert response.json()["deployment_target"] == "vercel"
 
     listed = client.get("/api/v1/projects")
     assert listed.status_code == 200
@@ -53,12 +55,20 @@ def test_create_and_list_project(client: TestClient) -> None:
 
 
 def test_duplicate_repository_name_is_rejected(client: TestClient) -> None:
-    payload = {"name": "First", "repository_name": "shared-repo"}
+    payload = {
+        "name": "First",
+        "repository_name": "shared-repo",
+        "deployment_target": "railway",
+    }
     assert client.post("/api/v1/projects", json=payload).status_code == 202
 
     duplicate = client.post(
         "/api/v1/projects",
-        json={"name": "Second", "repository_name": "shared-repo"},
+        json={
+            "name": "Second",
+            "repository_name": "shared-repo",
+            "deployment_target": "vercel",
+        },
     )
 
     assert duplicate.status_code == 409
@@ -67,13 +77,34 @@ def test_duplicate_repository_name_is_rejected(client: TestClient) -> None:
 def test_invalid_repository_name_is_rejected(client: TestClient) -> None:
     response = client.post(
         "/api/v1/projects",
-        json={"name": "Invalid", "repository_name": "not/allowed"},
+        json={
+            "name": "Invalid",
+            "repository_name": "not/allowed",
+            "deployment_target": "vercel",
+        },
     )
 
     assert response.status_code == 422
 
     uppercase = client.post(
         "/api/v1/projects",
-        json={"name": "Invalid", "repository_name": "Not-Lowercase"},
+        json={
+            "name": "Invalid",
+            "repository_name": "Not-Lowercase",
+            "deployment_target": "vercel",
+        },
     )
     assert uppercase.status_code == 422
+
+
+def test_invalid_deployment_target_is_rejected(client: TestClient) -> None:
+    response = client.post(
+        "/api/v1/projects",
+        json={
+            "name": "Invalid",
+            "repository_name": "invalid-target",
+            "deployment_target": "somewhere",
+        },
+    )
+
+    assert response.status_code == 422

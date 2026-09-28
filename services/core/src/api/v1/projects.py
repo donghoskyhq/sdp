@@ -25,6 +25,7 @@ def create_project(payload: ProjectCreate, session: DatabaseSession) -> Project:
         name=payload.name,
         repository_name=payload.repository_name,
         description=payload.description,
+        deployment_target=payload.deployment_target,
         status="pending",
     )
     session.add(project)

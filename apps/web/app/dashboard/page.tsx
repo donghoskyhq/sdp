@@ -32,13 +32,14 @@ export default async function DashboardPage() {
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">Dashboard</p>
       <h1 className="mt-3 text-4xl font-semibold tracking-tight">Projects</h1>
       <p className="mt-3 text-slate-400">
-        Start with a private GitHub repository and a ready-to-run Next.js application.
+        Start with a private GitHub repository and deploy a ready-to-run Next.js application.
       </p>
 
       <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
         <h2 className="text-xl font-medium">Start a new project</h2>
         <p className="mb-6 mt-2 text-sm leading-6 text-slate-400">
-          The platform creates the repository and commits the default TypeScript App Router starter.
+          The platform creates the repository, commits the default TypeScript App Router starter,
+          and deploys it to Vercel or Railway.
         </p>
         <NewProjectForm />
       </section>
@@ -59,7 +60,14 @@ export default async function DashboardPage() {
               <article className="rounded-2xl border border-white/10 bg-slate-900/60 p-5" key={project.id}>
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold">{project.name}</h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-semibold">{project.name}</h3>
+                      {project.deployment_target ? (
+                        <span className="rounded-full border border-white/10 px-2 py-0.5 text-xs font-medium capitalize text-slate-300">
+                          {project.deployment_target}
+                        </span>
+                      ) : null}
+                    </div>
                     <p className="mt-1 font-mono text-sm text-slate-400">
                       {project.github_full_name ?? project.repository_name}
                     </p>
@@ -71,15 +79,39 @@ export default async function DashboardPage() {
                   </span>
                 </div>
                 {project.description ? <p className="mt-4 text-sm text-slate-300">{project.description}</p> : null}
-                {project.status === "ready" && project.github_url ? (
-                  <a
-                    className="mt-5 inline-flex text-sm font-semibold text-emerald-300 hover:text-emerald-200"
-                    href={project.github_url}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    Open GitHub repository ↗
-                  </a>
+                {project.status === "ready" ? (
+                  <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+                    {project.deployment_url ? (
+                      <a
+                        className="text-emerald-300 hover:text-emerald-200"
+                        href={project.deployment_url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Open deployment ↗
+                      </a>
+                    ) : null}
+                    {project.github_url ? (
+                      <a
+                        className="text-slate-300 hover:text-white"
+                        href={project.github_url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        GitHub ↗
+                      </a>
+                    ) : null}
+                    {project.deployment_project_url ? (
+                      <a
+                        className="text-slate-300 hover:text-white"
+                        href={project.deployment_project_url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Provider dashboard ↗
+                      </a>
+                    ) : null}
+                  </div>
                 ) : null}
                 {project.status === "failed" && project.error_message ? (
                   <p className="mt-4 text-sm text-rose-300">{project.error_message}</p>
