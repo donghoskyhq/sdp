@@ -101,7 +101,7 @@ class GitHubClient:
     def _replace_initial_content(
         self, *, full_name: str, default_branch: str, files: dict[str, str]
     ) -> None:
-        ref_path = f"/repos/{full_name}/git/ref/heads/{default_branch}"
+        ref_path = f"/repos/{full_name}/git/refs/heads/{default_branch}"
         ref = self._request("GET", ref_path, expected_status=200)
         ref_object = ref.get("object")
         if not isinstance(ref_object, dict) or not isinstance(ref_object.get("sha"), str):
@@ -148,8 +148,7 @@ class GitHubClient:
             json={"sha": self._required_string(commit, "sha"), "force": False},
         )
 
-    def _request(
-        self, method: str, path: str, *, expected_status: int, json: dict[str, Any] | None = None
+    def _request(self, method: str, path: str, *, expected_status: int, json: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         try:
             response = self._client.request(method, path, json=json)
