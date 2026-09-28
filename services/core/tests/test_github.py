@@ -21,7 +21,7 @@ def test_create_nextjs_repository_commits_starter() -> None:
                     "default_branch": "main",
                 },
             )
-        if request.method == "GET" and path.endswith("/git/ref/heads/main"):
+        if request.method == "GET" and path == "/repos/sky/customer-portal/git/ref/heads/main":
             return httpx.Response(200, json={"object": {"sha": "initial-sha"}})
         if request.method == "POST" and path.endswith("/git/blobs"):
             blob_count += 1
@@ -31,7 +31,7 @@ def test_create_nextjs_repository_commits_starter() -> None:
             return httpx.Response(201, json={"sha": "tree-sha"})
         if request.method == "POST" and path.endswith("/git/commits"):
             return httpx.Response(201, json={"sha": "commit-sha"})
-        if request.method == "PATCH" and path.endswith("/git/ref/heads/main"):
+        if request.method == "PATCH" and path == "/repos/sky/customer-portal/git/refs/heads/main":
             return httpx.Response(200, json={"object": {"sha": "commit-sha"}})
         return httpx.Response(500, json={"message": f"unexpected {request.method} {path}"})
 
