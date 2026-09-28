@@ -1,5 +1,7 @@
+from collections.abc import Generator
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from shared.config import get_settings
 
@@ -11,3 +13,9 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False
 
 class Base(DeclarativeBase):
     """Base metadata for future SDP domain models."""
+
+
+def get_db() -> Generator[Session, None, None]:
+    """Provide a transaction-scoped database session to API routes."""
+    with SessionLocal() as session:
+        yield session

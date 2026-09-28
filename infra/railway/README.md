@@ -19,7 +19,7 @@ Railway networking to route to that port. The worker does not expose an HTTP por
 The image start commands are:
 
 - Web: `node server.js` from the Next.js standalone build.
-- API: `uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}`.
+- API: runs `alembic upgrade head`, then starts Uvicorn on `${PORT:-8000}`.
 - Worker: `python -m worker.main`.
 
 ## Required variables
@@ -56,9 +56,14 @@ the `postgresql+psycopg://` scheme expected by SQLAlchemy.
 | --- | --- | --- |
 | `SDP_ENVIRONMENT` | `production` | Runtime environment label |
 | `LOG_LEVEL` | `INFO` | Worker log level |
-| `DATABASE_URL` | Same PostgreSQL reference as API | Reserved for future jobs |
+| `DATABASE_URL` | Same PostgreSQL reference as API | Project provisioning state |
 | `REDIS_URL` | Same Redis reference as API | RQ connection |
 | `QUEUE_NAME` | `default` | Queue consumed by the worker |
+| `GITHUB_TOKEN` | secret | GitHub App installation or fine-grained token; worker only |
+| `GITHUB_OWNER` | organization login | Owner for newly provisioned repositories |
+| `GITHUB_OWNER_TYPE` | `organization` | Use `user` for a personal owner |
+| `GITHUB_API_URL` | `https://api.github.com` | Override only for GitHub Enterprise Server |
+| `GITHUB_REPOSITORY_PRIVATE` | `true` | Keep new repositories private by default |
 
 ## Internal connectivity
 

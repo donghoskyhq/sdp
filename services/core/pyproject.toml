@@ -10,6 +10,7 @@ requires-python = ">=3.12"
 dependencies = [
   "alembic>=1.14,<2",
   "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
   "psycopg[binary]>=3.2,<4",
   "pydantic-settings>=2.7,<3",
   "redis>=5.2,<7",
@@ -20,7 +21,6 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "httpx>=0.28,<1",
   "mypy>=1.14,<2",
   "pytest>=8.3,<9",
   "ruff>=0.9,<1",
@@ -39,6 +39,7 @@ where = ["src"]
 api = ["py.typed"]
 shared = ["py.typed"]
 worker = ["py.typed"]
+"worker.templates.nextjs" = ["*", "app/*", "public/*"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

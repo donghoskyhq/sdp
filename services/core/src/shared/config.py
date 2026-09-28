@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import AnyHttpUrl, Field, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -23,6 +24,12 @@ class Settings(BaseSettings):
     redis_url: RedisDsn = RedisDsn("redis://localhost:6379/0")
     queue_name: str = "default"
     cors_origins: list[AnyHttpUrl] = [AnyHttpUrl("http://localhost:3000")]
+
+    github_token: str = ""
+    github_owner: str = ""
+    github_owner_type: Literal["organization", "user"] = "organization"
+    github_api_url: str = "https://api.github.com"
+    github_repository_private: bool = True
 
 
 @lru_cache

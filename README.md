@@ -1,12 +1,12 @@
 # Sky Dev Platform (SDP)
 
 SDP is an internal self-service platform for creating and running Sky software projects. This
-repository currently contains the minimum platform skeleton only: a Next.js Web application, a
-FastAPI core API, an RQ worker, PostgreSQL configuration, and a Redis-backed queue.
+repository contains a Next.js Web application, a FastAPI core API, an RQ worker, PostgreSQL
+configuration, and a Redis-backed queue. Users can start projects from the dashboard; the worker
+creates a private GitHub repository and commits a minimal Next.js/TypeScript App Router starter.
 
-GitHub repository creation, Harness management, controlled update pull requests, and deployment
-provisioning for Railway, Vercel, or AWS Amplify are intentionally out of scope for this initial
-commit.
+Harness management, controlled update pull requests, and deployment provisioning for Railway,
+Vercel, or AWS Amplify remain outside this workflow.
 
 ## Architecture
 
@@ -27,7 +27,7 @@ be a private service URL, so no internal API address is sent to the browser.
 apps/web/                 Next.js App Router frontend
 services/core/            FastAPI API and Python worker
 services/core/src/api/    API routes and Alembic environment
-services/core/src/worker/ Worker entry point and placeholder jobs
+services/core/src/worker/ Worker entry point and project templates
 infra/railway/            Railway service setup notes
 docker-compose.yml        Full local container stack
 ```
@@ -48,6 +48,16 @@ cp .env.example .env
 
 The checked-in values are local-only defaults. Keep real secrets in local `.env` files or the target
 platform's secret manager; `.env` files are ignored by Git.
+
+Project provisioning requires these worker environment variables:
+
+- `GITHUB_TOKEN`: a GitHub App installation token (recommended) or fine-grained token with repository
+  administration and contents write access.
+- `GITHUB_OWNER`: the organization or user account that will own new repositories.
+- `GITHUB_OWNER_TYPE`: `organization` (default) or `user`.
+- `GITHUB_REPOSITORY_PRIVATE`: whether newly created repositories are private (default: `true`).
+
+Do not expose `GITHUB_TOKEN` to the Web service or commit it to this repository.
 
 ## Run locally with native Web/API/Worker processes
 
@@ -73,6 +83,7 @@ python -m pip install -e 'services/core[dev]'
 set -a
 source .env
 set +a
+alembic -c services/core/alembic.ini upgrade head
 uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -99,21 +110,22 @@ This builds the same Web, API, and Worker Dockerfiles intended for Railway and s
 Redis. Stop the stack with `docker compose down`. Add `-v` only when you intentionally want to remove
 local database and Redis volumes.
 
-## Worker placeholder job
+## Project provisioning
 
-The worker consumes the `default` queue. To enqueue the non-provisioning placeholder while the worker
-is running:
+Open the dashboard and submit a project name and repository name. The API records the project and
+enqueues `worker.jobs.provision_project`; the worker then creates the GitHub repository and replaces
+GitHub's initial commit with the bundled Next.js starter. Provisioning status and the repository link
+appear on the dashboard.
+
+To enqueue an existing project manually while the worker is running:
 
 ```bash
 source services/core/.venv/bin/activate
 set -a
 source .env
 set +a
-python -c 'from redis import Redis; from rq import Queue; from shared.config import get_settings; s = get_settings(); Queue(s.queue_name, connection=Redis.from_url(str(s.redis_url))).enqueue("worker.jobs.provision_project", "example-project")'
+python -c 'from redis import Redis; from rq import Queue; from shared.config import get_settings; s = get_settings(); Queue(s.queue_name, connection=Redis.from_url(str(s.redis_url))).enqueue("worker.jobs.provision_project", "<project-uuid>")'
 ```
-
-The worker logs both receipt and completion. The job does not call GitHub, Harness, Railway, Vercel,
-or AWS Amplify.
 
 ## Validation
 

@@ -1,9 +1,11 @@
 from fastapi import APIRouter
 
+from api.v1.projects import router as projects_router
 from shared.config import get_settings
 from shared.schemas import ServiceStatusResponse
 
 router = APIRouter()
+router.include_router(projects_router)
 
 
 @router.get("/status", response_model=ServiceStatusResponse, tags=["status"])

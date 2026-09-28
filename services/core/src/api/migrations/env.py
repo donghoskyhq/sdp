@@ -5,6 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from shared.config import get_settings
 from shared.database import Base
+from shared.models import Project  # noqa: F401
 
 config = context.config
 settings = get_settings()
